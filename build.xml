@@ -36,13 +36,13 @@
 	</target>
 
 	<target name="build">
-        <javac srcdir="${src.dir}" destdir="${bin.dir}" debug="on" includeantruntime="false" >
-            <classpath>
-                <fileset dir="${ivy.lib.dir}">
-                    <include name="**/*.jar"/>
-                </fileset>
-            </classpath>
-        </javac>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" debug="on" includeantruntime="false">
+			<classpath>
+				<fileset dir="${ivy.lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
 	</target>
 
 	<target name="init" depends="install-ivy">
@@ -56,9 +56,7 @@
 			<fileset dir="${ivy.lib.dir}" />
 			<fileset dir="${ivy.jar.dir}" />
 		</delete>
-
 	</target>
-
 
 	<target name="download-ivy" unless="skip.download">
 		<mkdir dir="${ivy.jar.dir}" />
@@ -68,7 +66,7 @@
 		<echo message="installing ivy..." />
 		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
 	</target>
-	
+
 	<!--
 	 ================================= 
       target: install-ivy         
