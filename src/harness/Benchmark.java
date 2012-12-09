@@ -75,7 +75,8 @@ public class Benchmark {
 
 	private static void printResults(Map<DRNG, Long> res) {
 		SortedSet<Map.Entry<DRNG, Long>> entries = entriesSortedByValues(res);
-
+		
+		System.out.println();
 		System.out.println("Results (higher is better):");
 		for (Entry<DRNG, Long> entry : entries) {
 			String drngName = entry.getKey().getClass().getSimpleName();
