@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import org.reflections.Reflections;
 
-import drng.DRNG;
+
 
 public class Benchmark {
 	private static Map<DRNG, Long> results = new HashMap<DRNG, Long>();
@@ -21,20 +21,20 @@ public class Benchmark {
 		Reflections ref = new Reflections("drng");
 		Set<Class<? extends DRNG>> drngClasses = ref.getSubTypesOf(DRNG.class);
 		List<DRNG> drngs = createDRNGs(drngClasses);
-
-		runTests(drngs);
+		
+		runTests(drngs, 5000000);
 
 		System.out.println("Tests done!");
 		printResults(results);
 	}
 
 	/**
-	 * Runs each DRNG for runTime milliseconds. Then stores results in result
+	 * Runs each DRNG for n iterations. Then stores results in result
 	 * map.
 	 * 
 	 * @param drngs
 	 */
-	private static void runTests(List<DRNG> drngs) {
+	private static void runTests(List<DRNG> drngs, int n) {
 		for (DRNG drng : drngs) {
 			System.out.println("Running test: " + drng.getClass().getName());
 
@@ -42,18 +42,18 @@ public class Benchmark {
 			drng.setSeed(0);
 
 			long count = 0;
-			int runTime = 3000;
-			long start = System.currentTimeMillis();
-			long end = start + runTime;
-
-			while (System.currentTimeMillis() < end) {
+			long start = System.nanoTime();
+			
+			while (count < n) {
+//				System.out.println(drng.run());
 				drng.run();
 				count++;
 			}
+			
 			// Get the actual duration in case the while loop ran over.
-			long duration = System.currentTimeMillis() - start;
+			long duration = System.nanoTime() - start;
 
-			long speed = count / (duration / 1000);
+			long speed = (long) (count / (duration / Math.pow(10, 9)));
 			results.put(drng, speed);
 
 			System.out.println(drng.getClass().getSimpleName()

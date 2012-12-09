@@ -1,5 +1,7 @@
 package drng;
 
+import harness.DRNG;
+
 import java.util.Random;
 
 public class JavaRandom extends DRNG {

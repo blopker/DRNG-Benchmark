@@ -1,16 +1,16 @@
 package drng;
 
-import harness.DRNG;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public class JavaSecureRandom extends DRNG {
-	SecureRandom rnd;
+import harness.DRNG;
 
-	public JavaSecureRandom() {
+public class DevRandom extends DRNG {
+	SecureRandom rnd;
+	
+	public DevRandom() {
 		try {
-			rnd = SecureRandom.getInstance("SHA1PRNG");
+			rnd = SecureRandom.getInstance("NativePRNG");
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}

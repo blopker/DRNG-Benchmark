@@ -1,4 +1,4 @@
-package drng;
+package harness;
 
 public abstract class DRNG {
 	public DRNG() {
