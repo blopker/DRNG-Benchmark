@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Dec 8, 2012 5:08:18 PM                                                        
+
+     DRNG-Benchmark    
+     Random number generator benchmark harness.
+                   
+     ninj0x                                                                
+     ====================================================================== -->
+<project name="DRNG-Benchmark" default="drng-bechmark" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+            Random number generator benchmark harness.
+    </description>
+
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="bin.dir" value="${basedir}/bin" />
+	<property name="ivy.lib.dir" value="${basedir}/lib" />
+	<property name="ivy.install.version" value="2.2.0" />
+	<property name="ivy.jar.dir" value="${basedir}/ivy" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+	<path id="lib.path.id">
+		<fileset dir="${ivy.lib.dir}" />
+	</path>
+
+	<path id="run.path.id">
+		<path refid="lib.path.id" />
+		<path location="${bin.dir}" />
+	</path>
+
+	<!-- ================================= 
+          target: drng-bechmark              
+         ================================= -->
+	<target name="drng-bechmark" depends="build" description="Random number generator benchmark harness.">
+		<java classpathref="run.path.id" classname="harness.Benchmark" />
+	</target>
+
+	<target name="build" depends="init">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${ivy.lib.dir}" debug="on" includeantruntime="false" />
+	</target>
+
+	<target name="init" depends="install-ivy">
+		<mkdir dir="${bin.dir}" />
+		<ivy:retrieve />
+	</target>
+
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${bin.dir}" />
+			<fileset dir="${ivy.lib.dir}" />
+			<fileset dir="${ivy.jar.dir}" />
+		</delete>
+
+	</target>
+
+
+	<target name="download-ivy" unless="skip.download">
+		<mkdir dir="${ivy.jar.dir}" />
+		<!--
+		 download Ivy from web site so that it can be used even without any special installation 
+		-->
+		<echo message="installing ivy..." />
+		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+	
+	<!--
+	 ================================= 
+      target: install-ivy         
+        this target is not necessary if you put ivy.jar in your ant lib directory
+        if you already have ivy in your ant lib, you can simply remove this
+        target and the dependency the 'go' target has on it
+     ================================= 
+	-->
+	<target name="install-ivy" depends="download-ivy" description="--> install ivy">
+		<!--
+	 	  try to load ivy here from local ivy dir, in case the user has not already dropped
+	      it into ant's lib dir (note that the latter copy will always take precedence).
+	      We will not fail as long as the ivy jar is in at least one of ant's lib dir or 
+	      the local lib dir. 
+		-->
+		<path id="ivy.lib.path">
+			<pathelement location="${ivy.jar.file}" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
+
+</project>
