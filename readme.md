@@ -5,6 +5,7 @@ Usage
 -----
 Make sure Java 7 is installed then run:
 
+	ant init
 	ant drng-bechmark
 
 

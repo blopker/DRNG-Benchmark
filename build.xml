@@ -35,8 +35,14 @@
 		<java classpathref="run.path.id" classname="harness.Benchmark" />
 	</target>
 
-	<target name="build" depends="init">
-		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${ivy.lib.dir}" debug="on" includeantruntime="false" />
+	<target name="build">
+        <javac srcdir="${src.dir}" destdir="${bin.dir}" debug="on" includeantruntime="false" >
+            <classpath>
+                <fileset dir="${ivy.lib.dir}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
 	</target>
 
 	<target name="init" depends="install-ivy">
