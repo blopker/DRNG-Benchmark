@@ -1,146 +1,224 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Drng-benchmark : Deterministic Random Number Generator Benchmarks" />
+body{
+  color:#444;
+  font-family:Georgia, Palatino, 'Palatino Linotype', Times,
+              'Times New Roman', serif,
+              "Hiragino Sans GB", "STXihei", "微软雅黑";
+  font-size:12px;
+  line-height:1.5em;
+  background:#fefefe;
+  width: 45em;
+  margin: 10px auto;
+  padding: 1em;
+  outline: 1300px solid #FAFAFA;
+}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+a{ color: #0645ad; text-decoration:none;}
+a:visited{ color: #0b0080; }
+a:hover{ color: #06e; }
+a:active{ color:#faa700; }
+a:focus{ outline: thin dotted; }
+a:hover, a:active{ outline: 0; }
 
-    <title>Drng-benchmark</title>
-  </head>
+span.backtick {
+  border:1px solid #EAEAEA;
+  border-radius:3px;
+  background:#F8F8F8;
+  padding:0 3px 0 3px;
+}
 
-  <body>
+::-moz-selection{background:rgba(255,255,0,0.3);color:#000}
+::selection{background:rgba(255,255,0,0.3);color:#000}
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ninj0x/DRNG-Benchmark">View on GitHub</a>
+a::-moz-selection{background:rgba(255,255,0,0.3);color:#0645ad}
+a::selection{background:rgba(255,255,0,0.3);color:#0645ad}
 
-          <h1 id="project_title">Drng-benchmark</h1>
-          <h2 id="project_tagline">Deterministic Random Number Generator Benchmarks</h2>
+p{
+margin:1em 0;
+}
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/ninj0x/DRNG-Benchmark/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/ninj0x/DRNG-Benchmark/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+img{
+max-width:100%;
+}
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h2 id="introduction">Introduction</h2>
+h1,h2,h3,h4,h5,h6{
+font-weight:normal;
+color:#111;
+line-height:1em;
+}
+h4,h5,h6{ font-weight: bold; }
+h1{ font-size:2.5em; }
+h2{ font-size:2em; border-bottom:1px solid silver; padding-bottom: 5px; }
+h3{ font-size:1.5em; }
+h4{ font-size:1.2em; }
+h5{ font-size:1em; }
+h6{ font-size:0.9em; }
 
-        <p>Deterministic Random Number Generators (DRNGs) are important for a wide variety of applications. However, all languages implement non secure DRNGs as the default. Depending on the application this can lead to weak cryptography and thus information leakage. Typically the more cryptography a RNG provides the slower it is. This paper details a Java DRNG test harness and evaluates the speed of some popular DRNGs.</p>
-
-        <h2 id="test-harness">Test Harness</h2>
-
-        <p>The test harness is designed to easily add more DRNGs. To do so, simply make a new class in the drng package that extends the harness.DRNG class. If the new DRNG requires any libraries, add that dependency to the ivy.xml file.</p>
-
-        <p>You only need to implements two methods, seed and run. The seed method is called by the test harness for each DRNG. The seed is held constant so each test run creates identical random numbers. The run method actually runs the DRNG and is called millions of times during each test.</p>
-
-        <p>To keep the tests as simple as possible, the harness uses runtime reflection to find all harness.DRNG subclasses in the drng package. This provides the ability to extend the harness with many new DRNGs without having to change any other code.</p>
-
-        <p>For dependency management, the harness uses Apache Ivy. However, the only requirements for the harness is Java 1.6+ and ant. Running 'ant init' will download Ivy then use Ivy to download the other dependencies from a Maven repository.</p>
-
-        <h3 id="test-harness-usage">Test Harness Usage</h3>
-
-        <pre><code>ant init
-        ant drng-bechmark
-        </code></pre>
-
-        <h2 id="algorithms-tested">Algorithms Tested</h2>
-
-        <p>14 algorithms were used for this test. They were picked because of their popularity and availability.</p>
-
-        <p>Java comes with 3 DRNGs; Random, SecureRandom, and DevRandom. Random is the class most people will use when making random numbers. This method is not secure and should not be used for crypto applications. RandomSecure is secure and used the SHA1 hash to generate its numbers. The DevRandom class is also secure. It gets its numbers from the Linux /dev/random file which in turn obtains entropy from system events. DevRandom is the closest to a true random generator in this test suite.</p>
-
-        <p>The other secure DRNGs used are derived from popular hash functions. The hash functions are turned into generators by using a seed as the initial digest then feeding the output back in.</p>
-
-        <p>For the non secure RNGs the MersenneTwister and Wells algorithms were picked. Twister is very popular and used as the default RNG in some languages (Python). Wells is also another popular choice and comes in different sizes depending on how large a number is needed.</p>
-
-        <h3 id="algorithm-list">Algorithm List</h3>
-
-        <p>Secure</p>
-
-        <ul>
-        <li>/dev/random</li>
-        <li>java.security.SecureRandom</li>
-        <li>MD2</li>
-        <li>MD5</li>
-        <li>SHA1</li>
-        <li>SHA256</li>
-        <li>SHA384</li>
-        <li>SHA512</li>
-        </ul>
-
-        <p>Not secure</p>
-
-        <ul>
-        <li>java.util.Random</li>
-        <li>MersenneTwister</li>
-        <li>Well512a</li>
-        <li>Well1024a</li>
-        <li>Well19937a</li>
-        <li>Well44497a</li>
-        </ul>
-
-        <h2 id="test-environment">Test Environment</h2>
-
-        <p>In order to maintain test repeatability, Amazon's AWS EC2 was used. The machine was commissioned thusly:</p>
-
-        <ul>
-        <li>Amazon t1.micro EC2</li>
-        <li>Ubuntu 12.04.1 x86_64</li>
-        <li>Java 1.6</li>
-        </ul>
-
-        <h2 id="method">Method</h2>
-
-        <p>Each algorithm was seeded with 0 and told to generate 5,000,000 numbers. The Zero class generates 0 and is used as an upper limit for speed.</p>
-
-        <h2 id="results">Results</h2>
-
-        <pre><code>100329 num/sec -&gt; MD2
-        141786 num/sec -&gt; DevRandom
-        197461 num/sec -&gt; SHA512
-        234212 num/sec -&gt; SHA384
-        577163 num/sec -&gt; SHA256
-        1330412 num/sec -&gt; MD5
-        1485626 num/sec -&gt; SHA1
-        2849227 num/sec -&gt; JavaSecureRandom
-        16926771 num/sec -&gt; Well44497a
-        21308819 num/sec -&gt; Well1024a
-        23368043 num/sec -&gt; Well19937a
-        25539027 num/sec -&gt; Well512a
-        29744472 num/sec -&gt; JavaRandom
-        32821975 num/sec -&gt; Well1024aRNG
-        37400062 num/sec -&gt; MersTwister
-        130965357 num/sec -&gt; Zero
-        </code></pre>
-
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js"> {"dataSourceUrl":"//docs.google.com/spreadsheet/tq?key=0Ajn6jJwwzI6HdGNfWUNvLVV6Q2E0TlVMNW1DWlNobkE&transpose=1&headers=1&range=B1%3AC15&gid=0&pub=1","options":{"titleTextStyle":{"bold":true,"color":"#000","fontSize":16},"vAxes":[{"useFormatFromData":true,"minValue":null,"viewWindowMode":null,"viewWindow":null,"maxValue":null},{"useFormatFromData":true}],"title":"DRNG numbers/sec","booleanRole":"certainty","animation":{"duration":500},"legend":"right","hAxis":{"title":"Numbers per Second","useFormatFromData":true,"minValue":null,"viewWindow":{"min":null,"max":null},"maxValue":null},"tooltip":{},"isStacked":false,"width":823,"height":531},"state":{},"view":{"columns":[{"calc":"emptyString","type":"string","sourceColumn":0},0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]},"chartType":"BarChart","chartName":"Chart 1"} </script>
-
-        <h2 id="analysis">Analysis</h2>
-
-        <p>As to be expected, the non secure RNGs are an order of magnitude faster than the secure ones. The fastest secure RNG (SecureRandom) produces over 2 million numbers per second verses the Twister's almost 40 million. While the difference in speed is considerable, there's the question of how many applications can actually use that many random numbers.</p>
-
-        <p>The implications of using non secure RNGs may not be clear until after something goes wrong. On the other hand using secure RNGs will just slow down the program, an issue that is easily seen and fixed. Therefore, if an application needs considerably less than 2 million numbers a secure RNG should always be used. Only when performance becomes a problem or there is no sensitive information should non secure RNGs be considered.</p>
-
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Drng-benchmark maintained by <a href="https://github.com/ninj0x">ninj0x</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+blockquote{
+color:#666666;
+margin:0;
+padding-left: 3em;
+border-left: 0.5em #EEE solid;
+}
+hr { display: block; height: 2px; border: 0; border-top: 1px solid #aaa;border-bottom: 1px solid #eee; margin: 1em 0; padding: 0; }
 
 
+pre , code, kbd, samp {
+  color: #000;
+  font-family: monospace;
+  font-size: 0.88em;
+  border-radius:3px;
+  background-color: #F8F8F8;
+  border: 1px solid #CCC;
+}
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; padding: 5px;}
+pre code { border: 0px !important; }
+code { padding: 0 3px 0 3px; }
 
-  </body>
-</html>
+b, strong { font-weight: bold; }
+
+dfn { font-style: italic; }
+
+ins { background: #ff9; color: #000; text-decoration: none; }
+
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol { margin: 1em 0; padding: 0 0 0 2em; }
+li p:last-child { margin:0 }
+dd { margin: 0 0 0 2em; }
+
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+@media only screen and (min-width: 480px) {
+body{font-size:14px;}
+}
+
+@media only screen and (min-width: 768px) {
+body{font-size:16px;}
+}
+
+@media print {
+  * { background: transparent !important; color: black !important; filter:none !important; -ms-filter: none !important; }
+  body{font-size:12pt; max-width:100%;}
+  a, a:visited { text-decoration: underline; }
+  hr { height: 1px; border:0; border-bottom:1px solid black; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }
+  pre, blockquote { border: 1px solid #999; padding-right: 1em; page-break-inside: avoid; }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page :left { margin: 15mm 20mm 15mm 10mm; }
+  @page :right { margin: 15mm 10mm 15mm 20mm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}</style></head><body><h1 id="deterministic-random-number-generator-benchmarks">Deterministic Random Number Generator Benchmarks</h1>
+
+<p>By Karl Lopker</p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Deterministic Random Number Generators (DRNGs) are important for a wide variety of applications. However, all languages implement non secure DRNGs as the default. Depending on the application this can lead to weak cryptography and thus information leakage. Typically the more cryptography a RNG provides the slower it is. This paper details a Java DRNG test harness and evaluates the speed of some popular DRNGs.</p>
+
+<h2 id="test-harness">Test Harness</h2>
+
+<p>The test harness is designed to easily add more DRNGs. To do so, simply make a new class in the drng package that extends the harness.DRNG class. If the new DRNG requires any libraries, add that dependency to the ivy.xml file.</p>
+
+<p>You only need to implements two methods, seed and run. The seed method is called by the test harness for each DRNG. The seed is held constant so each test run creates identical random numbers. The run method actually runs the DRNG and is called millions of times during each test.</p>
+
+<p>To keep the tests as simple as possible, the harness uses runtime reflection to find all harness.DRNG subclasses in the drng package. This provides the ability to extend the harness with many new DRNGs without having to change any other code.</p>
+
+<p>For dependency management, the harness uses Apache Ivy. However, the only requirements for the harness is Java 1.6+ and ant. Running 'ant init' will download Ivy then use Ivy to download the other dependencies from a Maven repository.</p>
+
+<h3 id="test-harness-usage">Test Harness Usage</h3>
+
+<pre><code>ant init
+ant drng-bechmark
+</code></pre>
+
+<h2 id="algorithms-tested">Algorithms Tested</h2>
+
+<p>14 algorithms were used for this test. They were picked because of their popularity and availability.</p>
+
+<p>Java comes with 3 DRNGs; Random, SecureRandom, and DevRandom. Random is the class most people will use when making random numbers. This method is not secure and should not be used for crypto applications. RandomSecure is secure and used the SHA1 hash to generate its numbers. The DevRandom class is also secure. It gets its numbers from the Linux /dev/random file which in turn obtains entropy from system events. DevRandom is the closest to a true random generator in this test suite.</p>
+
+<p>The other secure DRNGs used are derived from popular hash functions. The hash functions are turned into generators by using a seed as the initial digest then feeding the output back in.</p>
+
+<p>For the non secure RNGs the MersenneTwister and Wells algorithms were picked. Twister is very popular and used as the default RNG in some languages (Python). Wells is also another popular choice and comes in different sizes depending on how large a number is needed.</p>
+
+<h3 id="algorithm-list">Algorithm List</h3>
+
+<p>Secure</p>
+
+<ul>
+<li>/dev/random</li>
+<li>java.security.SecureRandom</li>
+<li>MD2</li>
+<li>MD5</li>
+<li>SHA1</li>
+<li>SHA256</li>
+<li>SHA384</li>
+<li>SHA512</li>
+</ul>
+
+<p>Not secure</p>
+
+<ul>
+<li>java.util.Random</li>
+<li>MersenneTwister</li>
+<li>Well512a</li>
+<li>Well1024a</li>
+<li>Well19937a</li>
+<li>Well44497a</li>
+</ul>
+
+<h2 id="test-environment">Test Environment</h2>
+
+<p>In order to maintain test repeatability, Amazon's AWS EC2 was used. The machine was commissioned thusly:</p>
+
+<ul>
+<li>Amazon t1.micro EC2</li>
+<li>Ubuntu 12.04.1 x86_64</li>
+<li>Java 1.6</li>
+</ul>
+
+<h2 id="method">Method</h2>
+
+<p>Each algorithm was seeded with 0 and told to generate 5,000,000 numbers. The Zero class generates 0 and is used as an upper limit for speed.</p>
+
+<h2 id="results">Results</h2>
+
+<pre><code>100329 num/sec -&gt; MD2
+141786 num/sec -&gt; DevRandom
+197461 num/sec -&gt; SHA512
+234212 num/sec -&gt; SHA384
+577163 num/sec -&gt; SHA256
+1330412 num/sec -&gt; MD5
+1485626 num/sec -&gt; SHA1
+2849227 num/sec -&gt; JavaSecureRandom
+16926771 num/sec -&gt; Well44497a
+21308819 num/sec -&gt; Well1024a
+23368043 num/sec -&gt; Well19937a
+25539027 num/sec -&gt; Well512a
+29744472 num/sec -&gt; JavaRandom
+32821975 num/sec -&gt; Well1024aRNG
+37400062 num/sec -&gt; MersTwister
+130965357 num/sec -&gt; Zero
+</code></pre>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/static/modules/gviz/1.0/chart.js"> {"dataSourceUrl":"//docs.google.com/spreadsheet/tq?key=0Ajn6jJwwzI6HdGNfWUNvLVV6Q2E0TlVMNW1DWlNobkE&transpose=1&headers=1&range=B1%3AC15&gid=0&pub=1","options":{"titleTextStyle":{"bold":true,"color":"#000","fontSize":16},"vAxes":[{"useFormatFromData":true,"minValue":null,"viewWindowMode":null,"viewWindow":null,"maxValue":null},{"useFormatFromData":true}],"title":"DRNG numbers/sec","booleanRole":"certainty","animation":{"duration":500},"legend":"right","hAxis":{"title":"Numbers per Second","useFormatFromData":true,"minValue":null,"viewWindow":{"min":null,"max":null},"maxValue":null},"tooltip":{},"isStacked":false,"width":823,"height":531},"state":{},"view":{"columns":[{"calc":"emptyString","type":"string","sourceColumn":0},0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]},"chartType":"BarChart","chartName":"Chart 1"} </script>
+
+<h2 id="analysis">Analysis</h2>
+
+<p>As to be expected, the non secure RNGs are an order of magnitude faster than the secure ones. The fastest secure RNG (SecureRandom) produces over 2 million numbers per second verses the Twister's almost 40 million. While the difference in speed is considerable, there's the question of how many applications can actually use that many random numbers.</p>
+
+<p>The implications of using non secure RNGs may not be clear until after something goes wrong. On the other hand using secure RNGs will just slow down the program, an issue that is easily seen and fixed. Therefore, if an application needs considerably less than 2 million numbers a secure RNG should always be used. Only when performance becomes a problem or there is no sensitive information should non secure RNGs be considered.</p>
+</body>
