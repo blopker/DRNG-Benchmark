@@ -14,7 +14,7 @@ public class JavaRandom extends DRNG {
 
 	@Override
 	public void setSeed(int seed) {
-		rnd = new Random(seed);
+		rnd.setSeed(seed);
 	}
 	
 }
