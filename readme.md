@@ -11,7 +11,8 @@ Make sure Java 6/7 and ant is installed then run:
 
 Project Site
 ------------
-http://ninj0x.github.com/DRNG-Benchmark
+[Write up](http://ninj0x.github.com/DRNG-Benchmark)
+[Presentation](https://docs.google.com/presentation/d/1cg-aCoQeVn441XSkF3w3VoLq5eZ6ePW2riAjN4Ihd1Q/edit)
 
 Abstract
 --------
