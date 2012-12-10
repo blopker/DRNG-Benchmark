@@ -13,7 +13,8 @@
     </description>
 
 	<property name="src.dir" value="${basedir}/src" />
-	<property name="bin.dir" value="${basedir}/bin" />
+	<property name="bin.dir" value="${basedir}/classes" />
+	<property name="jar.dir" value="${basedir}/jar" />
 	<property name="ivy.lib.dir" value="${basedir}/lib" />
 	<property name="ivy.install.version" value="2.2.0" />
 	<property name="ivy.jar.dir" value="${basedir}/ivy" />
@@ -32,7 +33,16 @@
           target: drng-bechmark              
          ================================= -->
 	<target name="drng-bechmark" depends="build" description="Random number generator benchmark harness.">
-		<java classpathref="run.path.id" classname="harness.Benchmark" />
+		<!-- Create the jar directory -->
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/drng-benchmark.jar" basedir="${bin.dir}">
+			<zipgroupfileset dir="${ivy.lib.dir}" includes="*.jar" />
+		</jar>
+		<java classname="harness.Benchmark" fork="false">
+			<classpath>
+				<pathelement location="${jar.dir}/drng-benchmark.jar" />
+			</classpath>
+		</java>
 	</target>
 
 	<target name="build">
@@ -55,6 +65,7 @@
 			<fileset dir="${bin.dir}" />
 			<fileset dir="${ivy.lib.dir}" />
 			<fileset dir="${ivy.jar.dir}" />
+			<fileset dir="${jar.dir}" />
 		</delete>
 	</target>
 
