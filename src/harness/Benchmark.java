@@ -66,7 +66,9 @@ public class Benchmark {
 		for (Class<? extends DRNG> drngClass : drngClasses) {
 			try {
 				drngs.add(drngClass.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e){
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
