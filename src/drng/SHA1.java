@@ -28,9 +28,7 @@ public class SHA1 extends DRNG {
 	@Override
 	public int run() {
 		currentHash = rnd.digest(currentHash);
-
-		ByteBuffer wrapped = ByteBuffer.wrap(currentHash);
-		return wrapped.getInt();
+		return 0;
 	}
 
 }
