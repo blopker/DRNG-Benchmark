@@ -9,8 +9,8 @@ Make sure Java 6/7 and ant is installed then run:
 	ant drng-bechmark
 
 
-Results
--------
+Project Site
+------------
 http://ninj0x.github.com/DRNG-Benchmark
 
 Abstract
@@ -38,6 +38,16 @@ Not secure
 - Well1024a
 - Well19937a
 - Well44497a
+
+Results
+-------
+Test environment:
+- Amazon t1.micro EC2
+- Ubuntu 12.04.1 x86_64
+- Java 1.6.
+
+Each algorithm was seeded with 0 and told to generate 5,000,000 numbers. The Zero class just returns 0 and is used as an upper limit for speed.
+
 
 
 
